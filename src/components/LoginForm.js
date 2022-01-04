@@ -2,8 +2,8 @@ import React, { useCallback, useState } from 'react';
 import { Button, Form, Input } from 'antd';
 import Link from 'next/link';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
-import { loginAction } from '../reducers';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginAction } from '../reducers/user.js';
 
 const ButtonWrapper = styled.div`
   margin-Top:10px;
@@ -15,6 +15,7 @@ const FormWraaper = styled(Form)`
 
 const LoginForm = () => { 
   const dispatch = useDispatch();
+  const { isLoggedIn } = useSelector((state) => state.user);
   const [id,setId] = useState('');
   const [password,setPassword] = useState('');
 
@@ -27,8 +28,8 @@ const LoginForm = () => {
   },[]);
 
   const ouSubmitForm = useCallback(() => {
-    console.log(id,password);
     dispatch(loginAction({id,password}));
+
   },[id,password]);
 
   return (
