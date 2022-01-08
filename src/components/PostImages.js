@@ -4,6 +4,7 @@ import { PlusOutlined } from '@ant-design/icons/lib/icons';
 import ImagesZoom from './ImagesZoom/index.js';
 
 const PostImages = ({images}) => {
+  console.log(images);
   const [showImagesZoom, setShowImagesZoom] = useState('');
 
   const onZoom = useCallback(() => {

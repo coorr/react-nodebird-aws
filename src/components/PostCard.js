@@ -10,6 +10,7 @@ import CommentForm from './CommentForm.js';
 import PostCardContent from './PostCardContent.js';
 
 const PostCard = ({post}) => {
+  console.log(post.Comments);
   const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const id = useSelector((state) => state.user.me?.id);
@@ -24,7 +25,7 @@ const PostCard = ({post}) => {
   return (
     <div style={{marginBottom:20}}>
       <Card
-        cover={post.Images[0] && <PostImages images={post.Images} /> }
+        cover={post.Images && <PostImages images={post.Images} /> }
         actions={[
           <RetweetOutlined key="retweet" />,
           liked ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onToggleLike} />
@@ -32,7 +33,7 @@ const PostCard = ({post}) => {
           <MessageOutlined key="comment" onClick={onToggleComment} />,
           <Popover key="more" content={(
             <Button.Group>
-              { id && post.User.id === id ? (
+              { id && post.User.id !== id ? (  // DB가 있을 경우 === 바꿔야함
                 <>
                 <Button>수정</Button>
                 <Button type="danger">삭제</Button>
