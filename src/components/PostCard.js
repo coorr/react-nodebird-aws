@@ -1,25 +1,37 @@
 import { EllipsisOutlined, HeartOutlined, HeartTwoTone, MessageOutlined, RetweetOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Popover, List, Comment } from 'antd';
-import React, { useState } from 'react';
+import React, { useState,useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import PropTypes from 'prop-types';
 import PostImages from './PostImages.js';
-import { useCallback } from 'react/cjs/react.development';
 import CommentForm from './CommentForm.js';
 import PostCardContent from './PostCardContent.js';
+import { REMOVE_POST_REQUEST } from '../reducers/post.js';
+import FollowButton from './FollowButton.js'
 
-const PostCard = ({post}) => {
-  console.log(post.Comments);
+const PostCard = ({ post }) => {
+  const dispatch = useDispatch();
+
   const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const id = useSelector((state) => state.user.me?.id);
+  const { removePostLoading } = useSelector((state) => state.post);
 
   const onToggleLike = useCallback(() => {
     setLiked((prev) => !prev);
   },[]);
   const onToggleComment = useCallback(() => {
     setCommentFormOpened((prev) => !prev);
+  },[]);
+
+  const onRemovePost = useCallback(() => {
+    console.log(post.id);
+    console.log(removePostLoading);
+    dispatch({
+      type: REMOVE_POST_REQUEST,
+      data: post.id
+    })
   },[]);
 
   return (
@@ -36,7 +48,7 @@ const PostCard = ({post}) => {
               { id && post.User.id !== id ? (  // DB가 있을 경우 === 바꿔야함
                 <>
                 <Button>수정</Button>
-                <Button type="danger">삭제</Button>
+                <Button type="danger" onClick={onRemovePost} loading={removePostLoading}>삭제</Button>
                 </>
               ) : <Button>신고</Button>}
             </Button.Group>
@@ -44,6 +56,7 @@ const PostCard = ({post}) => {
             <EllipsisOutlined   />
           </Popover>,
         ]}
+        extra={id && <FollowButton post={post} />}
       >
         <Card.Meta 
           avatar={<Avatar>{post.User.nickname[0]}</Avatar>}

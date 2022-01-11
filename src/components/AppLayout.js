@@ -8,6 +8,7 @@ import styled, {createGlobalStyle} from 'styled-components';
 import { useSelector } from 'react-redux';
 
 
+
 const SearchInput = styled(Input.Search)`
   vertical-align: middle;
 `;
@@ -28,7 +29,6 @@ const Global = createGlobalStyle`
 
 const AppLayout = ({children}) => {
   const { me } = useSelector((state) => state.user);
-  console.log(me);
 
   return (
       <div>
