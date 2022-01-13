@@ -8,15 +8,10 @@ import {
   UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE, UNFOLLOW_REQUEST
 } from '../reducers/user';
 
-const API_URL = 'http://localhost:4001';
 
-function logInAPI(data) {
-  return axios.post("/api/login", data)
-}
 
-function logOutAPI(data) {
-  return axios.post("/api/logOut", data)
-}
+
+
 
 function followAPI(data) {
   return axios.post("/api/followAPI", data)
@@ -27,40 +22,48 @@ function unfollowAPI(data) {
 }
 
 
+function logInAPI(data) {
+  return axios.post("/user/login", data)
+}
+
 function* logIn(action) {
   try {
-    // const result =  yield call(logInAPI);
-    yield delay(1000);
-    yield put({       // action을 dispatch 하는 느낌의 put
+    const result =  yield call(logInAPI, action.data);
+    console.log(result);
+    yield put({       
       type: LOG_IN_SUCCESS, 
-      data: action.data
+      data: result.data
     }) 
   } catch (err) {
+    console.log(err.response);
     yield put({
       type: LOG_IN_FAILURE,
-      data : err.response.data
+      error : err.response.data
     })
   }  
 }
 
+
+function logOutAPI() {
+  return axios.post("/user/logout")
+}
 function* logOut() {
   try {
-    // const result =  yield call(logOutAPI);
-    yield delay(1000);
+    yield call(logOutAPI);
     yield put({       // action을 dispatch 하는 느낌의 put
       type: LOG_OUT_SUCCESS, 
     }) 
   } catch (err) {
     yield put({
       type: LOG_OUT_FAILURE,
-      data : err.response.data
+      error : err.response.data
     })
   }  
 }
 
 
 function signUpAPI(data) {
-  return axios.post(API_URL+'/user', data);
+  return axios.post('/user', data);
 }
 function* signUp(action) {
   try {
@@ -73,7 +76,7 @@ function* signUp(action) {
   } catch (err) {
     yield put({
       type: SIGN_UP_FAILURE,
-      data : err.response.data
+      error : err.response.data
     })
   }  
 }
@@ -88,7 +91,7 @@ function* follow(action) {
   } catch (err) {
     yield put({
       type: FOLLOW_FAILURE,
-      data : err.response.data
+      error : err.response.data
     })
   }  
 }
@@ -103,7 +106,7 @@ function* unfollow(action) {
   } catch (err) {
     yield put({
       type: UNFOLLOW_FAILURE,
-      data : err.response.data
+      error : err.response.data
     })
   }  
 }

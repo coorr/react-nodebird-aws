@@ -1,10 +1,55 @@
 const express = require('express');
-const { User } = require('../models')
+const { User, Post } = require('../models')
 const bcrypt = require('bcrypt');
+const passport = require('passport');
+const { isLoggedIn, isNotLoggedIn } = require('./middlewares')
 
 const router = express.Router();
 
-router.post('/', async (req,res,next) => {
+router.post('/login',isNotLoggedIn, (req,res,next) => {
+  passport.authenticate('local', (err,user,info) => {
+    if(err) { // 서버 에러
+      console.error(err);
+      next(err);
+    }
+    if(info) { // 클라이언트 에러
+      return res.status(401).send(info.reason);
+    }
+
+    return req.login(user, async(loginErr) => {
+      if(loginErr) {
+        console.error(loginErr);
+        return next(loginErr);
+      }
+     try {
+       console.log("asdasdasds");
+      const fullUserWithoutPassword =  await User.findOne({
+        where: { id : user.id },
+        attributes: {
+          exclude: ['password']
+        },
+        include: [{
+          model: Post,
+        }, {
+          model: User,
+          as: 'Followings',
+        }, {
+          model: User,
+          as: 'Followers',
+        }]
+      })
+      return res.json(fullUserWithoutPassword);
+     } catch (error) {
+       
+     }
+      
+    })
+  })(req,res,next);
+});
+
+
+
+router.post('/', isNotLoggedIn ,  async (req,res,next) => {
   try {
     const exUser = await User.findOne({
       where: {
@@ -27,6 +72,12 @@ router.post('/', async (req,res,next) => {
     next(error);
   }
 })
+
+router.post('/logout', isLoggedIn , (req,res) => {
+  req.logout();
+  req.session.destroy();
+  res.send('ok');
+}) 
 
 module.exports = router;
 
