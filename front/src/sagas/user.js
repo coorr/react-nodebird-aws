@@ -5,22 +5,29 @@ import {
   LOG_OUT_REQUEST, LOG_OUT_SUCCESS, LOG_OUT_FAILURE,
   SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE, 
   FOLLOW_SUCCESS, FOLLOW_FAILURE, FOLLOW_REQUEST,
-  UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE, UNFOLLOW_REQUEST
+  UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE, UNFOLLOW_REQUEST, 
+  LOAD_MY_INFO_REQUEST, LOAD_MY_INFO_SUCCESS, LOAD_MY_INFO_FAILURE
 } from '../reducers/user';
 
 
-
-
-
-
-function followAPI(data) {
-  return axios.post("/api/followAPI", data)
+function loadMyInfoAPI() {
+  return axios.get("/user")
 }
 
-function unfollowAPI(data) {
-  return axios.post("/api/unfollowAPI", data)
+function* loadMyInfo(action) {
+  try {
+    const result =  yield call(loadMyInfoAPI, action.data);
+    yield put({       
+      type: LOAD_MY_INFO_SUCCESS, 
+      data: result.data
+    }) 
+  } catch (err) {
+    yield put({
+      type: LOAD_MY_INFO_FAILURE,
+      error : err.response.data
+    })
+  }  
 }
-
 
 function logInAPI(data) {
   return axios.post("/user/login", data)
@@ -81,6 +88,10 @@ function* signUp(action) {
   }  
 }
 
+
+function followAPI(data) {
+  return axios.post("/api/followAPI", data)
+}
 function* follow(action) {
   try {
     yield delay(1000);
@@ -96,6 +107,9 @@ function* follow(action) {
   }  
 }
 
+function unfollowAPI(data) {
+  return axios.post("/api/unfollowAPI", data)
+}
 function* unfollow(action) {
   try {
     yield delay(1000);
@@ -114,15 +128,12 @@ function* unfollow(action) {
 function* watchFollow() {
   yield takeLatest(FOLLOW_REQUEST, follow);
 }
-
 function* watchUnfollow() {
   yield takeLatest(UNFOLLOW_REQUEST, unfollow);
 }
-
 function* watchLogIn() {
   yield takeLatest(LOG_IN_REQUEST, logIn);
 }
-
 function* watchLogOut() {
   yield takeLatest(LOG_OUT_REQUEST, logOut);
 }
@@ -130,6 +141,10 @@ function* watchLogOut() {
 function* watchSignUp() {
   yield takeLatest(SIGN_UP_REQUEST, signUp)
 }
+function* watchLoadMyInfo() {
+  yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo)
+}
+
 
 
 export default function* userSage() {
@@ -139,5 +154,6 @@ export default function* userSage() {
     fork(watchLogIn),
     fork(watchLogOut),
     fork(watchSignUp),
+    fork(watchLoadMyInfo),
   ])
 }

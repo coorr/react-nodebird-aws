@@ -11,6 +11,7 @@ import { REMOVE_POST_REQUEST } from '../reducers/post.js';
 import FollowButton from './FollowButton.js'
 
 const PostCard = ({ post }) => {
+  console.log(post);
   const dispatch = useDispatch();
 
   const [liked, setLiked] = useState(false);
@@ -26,8 +27,6 @@ const PostCard = ({ post }) => {
   },[]);
 
   const onRemovePost = useCallback(() => {
-    console.log(post.id);
-    console.log(removePostLoading);
     dispatch({
       type: REMOVE_POST_REQUEST,
       data: post.id
@@ -37,7 +36,7 @@ const PostCard = ({ post }) => {
   return (
     <div style={{marginBottom:20}}>
       <Card
-        cover={post.Images && <PostImages images={post.Images} /> }
+        cover={post.Images[0] && <PostImages images={post.Images} /> }
         actions={[
           <RetweetOutlined key="retweet" />,
           liked ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onToggleLike} />
@@ -79,6 +78,7 @@ const PostCard = ({ post }) => {
                   avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
                   content={item.content}
                 />
+                
               </li>
             )}
           />
@@ -93,7 +93,7 @@ PostCard.propTypes = {
     id: PropTypes.number,
     User: PropTypes.object,
     content: PropTypes.string,
-    createdAt : PropTypes.object,
+    createdAt : PropTypes.string,
     Comments: PropTypes.arrayOf(PropTypes.object),
     Images: PropTypes.arrayOf(PropTypes.object)
   }).isRequired,

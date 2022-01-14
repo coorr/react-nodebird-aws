@@ -4,38 +4,7 @@ import produce from 'immer';
 import faker from '@withshepherd/faker';
 
 export const initialState = {
-  mainPosts: [{
-    id:1,
-    User: {
-      id:1,
-      nickname: '김진성'
-    },
-    content: '첫 번째 게시글 #해시태그 #익스프레스',
-    Images: [{
-      id: shortid.generate(),
-      src:  'https://bookthumb-phinf.pstatic.net/cover/137/995/13799585.jpg?update=20180726'
-    }, {
-      id: shortid.generate(),
-      src : 'https://bookthumb-phinf.pstatic.net/cover/137/995/13799585.jpg?update=20180726'
-    },{
-      id: shortid.generate(),
-      src: 'https://bookthumb-phinf.pstatic.net/cover/137/995/13799585.jpg?update=20180726'
-    }],
-    Comments: [{
-      id: shortid.generate(),
-      User: {
-        id: shortid.generate(),
-        nickname: 'nero',
-      },
-      content: '우와 개정판이 나왔군요~'
-    }, {
-      User: {
-        id: shortid.generate(),
-        nickname: 'hero'
-      },
-      content: '얼른 사고싶어요'
-    }]
-  }],
+  mainPosts: [],
   imagePaths: [],
   hasMorePost: true,
   loadPostsLoading: false,
@@ -54,27 +23,6 @@ export const initialState = {
   addCommentDone: false,
   addCommentError: null,
 }
-
-export const generateDummyPost = (number) => 
-  Array(number).fill().map((v,i) => ({
-    id:shortid.generate(),
-    User: {
-      id: shortid.generate(),
-      nickname: faker.name.findName(),
-    },
-    content: faker.lorem.paragraph(),
-    Images: [{
-      src: faker.image.image(),
-    }],
-    Comment: [{
-      User: {
-        id:shortid.generate(),
-        nickname:faker.name.findName(),
-      }, 
-      content: faker.lorem.sentence(),
-    }],
-  }))
-
 
 export const LOAD_POSTS_REQUEST = "LOAD_POSTS_REQUEST";
 export const LOAD_POSTS_SUCCESS = "LOAD_POSTS_SUCCESS";
@@ -100,28 +48,6 @@ export const addPost = (data) => ({
 export const addComment = (data) => ({
   type: ADD_COMMENT_REQUEST,
   data,
-})
-
-const dummyPost = (data) =>  ({
-  id: data.id,
-  content: data.content,
-  User: {
-    id:1,
-    nickname:'김진성2'
-  },
-  Images: [{
-    src: null
-  }],
-  Comments: [],
-}) 
-
-const dummyComment = (data) => ({
-  id:shortid.generate(),
-  content: data,
-  User: {
-    id: 1,
-    nickname:'김진성2'
-  },
 })
 
 // reducer == 이전 상태를 액션을 통해 다음 상태로 만들어내는 함수(불변성을 지키면서)
@@ -150,7 +76,7 @@ const reducer = (state = initialState,action) => produce(state, (draft) => {
         draft.addPostError=null;
         break;
       case ADD_POST_SUCCESS:
-        draft.mainPosts.unshift(dummyPost(action.data));
+        draft.mainPosts.unshift(action.data);
         draft.addPostLoading=false;
         draft.addPostDone=true;
         draft.addPostError=null;
@@ -181,8 +107,8 @@ const reducer = (state = initialState,action) => produce(state, (draft) => {
         draft.addCommentDone=false;
         break;
       case ADD_COMMENT_SUCCESS: {
-        const post = draft.mainPosts.find((v) => v.id === action.data.postId);  
-        post.Comments.unshift(dummyComment(action.data.content));   // 게시글 글 넣어주기
+        const post = draft.mainPosts.find((v) => v.id === action.data.PostId);  
+        post.Comments.unshift(action.data);   // 게시글 글 넣어주기
         draft.addCommentLoading=false;
         draft.addCommentDone=true;
         draft.addCommentError=null;
