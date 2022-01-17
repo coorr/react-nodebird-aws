@@ -7,6 +7,14 @@ export const initialState = {
   mainPosts: [],
   imagePaths: [],
   hasMorePost: true,
+  likePostLoading: false,
+  likePostDone: false,
+  likePostError: null,
+
+  unlikePostLoading: false,
+  unlikePostDone: false,
+  unlikePostError: null,
+
   loadPostsLoading: false,
   loadPostsDone: false,
   loadPostsError: null,
@@ -23,6 +31,14 @@ export const initialState = {
   addCommentDone: false,
   addCommentError: null,
 }
+
+export const LIKE_POST_REQUEST = "LIKE_POSTS_REQUEST";
+export const LIKE_POST_SUCCESS = "LIKE_POSTS_SUCCESS";
+export const LIKE_POST_FAILURE = "LIKE_POSTS_FAILURE"; 
+
+export const UNLIKE_POST_REQUEST = "UNLIKE_POSTS_REQUEST";
+export const UNLIKE_POST_SUCCESS = "UNLIKE_POSTS_SUCCESS";
+export const UNLIKE_POST_FAILURE = "UNLIKE_POSTS_FAILURE"; 
 
 export const LOAD_POSTS_REQUEST = "LOAD_POSTS_REQUEST";
 export const LOAD_POSTS_SUCCESS = "LOAD_POSTS_SUCCESS";
@@ -53,6 +69,41 @@ export const addComment = (data) => ({
 // reducer == 이전 상태를 액션을 통해 다음 상태로 만들어내는 함수(불변성을 지키면서)
 const reducer = (state = initialState,action) => produce(state, (draft) => {
     switch(action.type) {
+      case LIKE_POST_REQUEST:
+        draft.likePostLoading=true;
+        draft.likePostDone=false;
+        draft.likePostError=null;
+        break;
+      case LIKE_POST_SUCCESS:
+        const post = draft.mainPosts.find((v) => v.id === action.data.PostId)
+        post.Likers.push({ id: action.data.UserId });
+        draft.likePostLoading=false;
+        draft.likePostDone=true;
+        break;
+      case LIKE_POST_FAILURE: {
+        draft.likePostLoading=false;
+        draft.likePostError=action.error
+        break;
+      }
+        
+      case UNLIKE_POST_REQUEST:
+        draft.unlikePostLoading=true;
+        draft.unlikePostDone=false;
+        draft.unlikePostError=null;
+        break;
+      case UNLIKE_POST_SUCCESS: {
+        const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
+        post.Likers = post.Likers.filter((v) => v.id !== action.data.UserId); 
+        draft.unlikePostLoading=false;
+        draft.unlikePostDone=true;
+        break;
+      }
+        
+      case UNLIKE_POST_FAILURE:
+        draft.unlikePostLoading=false;
+        draft.unlikePostError=action.error
+        break;
+
       case LOAD_POSTS_REQUEST:
         draft.loadPostsLoading=true;
         draft.loadPostsDone=false;
@@ -92,10 +143,9 @@ const reducer = (state = initialState,action) => produce(state, (draft) => {
         draft.removePostError=null;
         break;
       case REMOVE_POST_SUCCESS:
-        draft.mainPosts= draft.mainPosts.filter((v)=> v.id !== action.data);
+        draft.mainPosts= draft.mainPosts.filter((v)=> v.id !== action.data.PostId);
         draft.removePostLoading=false;
         draft.removePostDone=true;
-        draft.removePostError=null;
         break;
       case REMOVE_POST_FAILURE:
         draft.removePostLoading=false;

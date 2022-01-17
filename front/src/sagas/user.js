@@ -90,14 +90,14 @@ function* signUp(action) {
 
 
 function followAPI(data) {
-  return axios.post("/api/followAPI", data)
+  return axios.patch(`/user/${data}/follow`)
 }
 function* follow(action) {
   try {
-    yield delay(1000);
+    const result =  yield call(followAPI, action.data);
     yield put({       
       type: FOLLOW_SUCCESS, 
-      data: action.data
+      data: result.data
     }) 
   } catch (err) {
     yield put({
@@ -108,14 +108,15 @@ function* follow(action) {
 }
 
 function unfollowAPI(data) {
-  return axios.post("/api/unfollowAPI", data)
+  return axios.delete(`/user/${data}/follow`);
 }
+
 function* unfollow(action) {
   try {
-    yield delay(1000);
+    const result =  yield call(unfollowAPI, action.data);
     yield put({       
       type: UNFOLLOW_SUCCESS, 
-      data: action.data
+      data: result.data
     }) 
   } catch (err) {
     yield put({

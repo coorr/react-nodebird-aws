@@ -6,12 +6,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ADD_COMMENT_REQUEST } from '../reducers/post';
 
 const CommentForm = ({post}) => {
-  console.log("asdasd",post);
   const dispatch = useDispatch();
   const { addCommentDone,addCommentLoading } = useSelector((state) => state.post);
 
   const id = useSelector((state) => state.user.me?.id);
-  console.log(id);
   const [commentText, onChangeCommentText, setCommentText] = useInput(''); 
 
   useEffect(() => {

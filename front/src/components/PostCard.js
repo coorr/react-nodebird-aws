@@ -7,21 +7,31 @@ import PropTypes from 'prop-types';
 import PostImages from './PostImages.js';
 import CommentForm from './CommentForm.js';
 import PostCardContent from './PostCardContent.js';
-import { REMOVE_POST_REQUEST } from '../reducers/post.js';
+import { LIKE_POST_REQUEST, REMOVE_POST_REQUEST, UNLIKE_POST_REQUEST } from '../reducers/post.js';
 import FollowButton from './FollowButton.js'
 
 const PostCard = ({ post }) => {
   console.log(post);
   const dispatch = useDispatch();
 
-  const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const id = useSelector((state) => state.user.me?.id);
+  const liked = post.Likers.find((v) => v.id === id);
   const { removePostLoading } = useSelector((state) => state.post);
 
-  const onToggleLike = useCallback(() => {
-    setLiked((prev) => !prev);
+  const onLike = useCallback(() => {
+    dispatch({
+      type: LIKE_POST_REQUEST,
+      data: post.id,
+    })
   },[]);
+  const onUnlike = useCallback(() => {
+    dispatch({
+      type: UNLIKE_POST_REQUEST,
+      data: post.id,
+    })
+  },[]);
+
   const onToggleComment = useCallback(() => {
     setCommentFormOpened((prev) => !prev);
   },[]);
@@ -39,12 +49,12 @@ const PostCard = ({ post }) => {
         cover={post.Images[0] && <PostImages images={post.Images} /> }
         actions={[
           <RetweetOutlined key="retweet" />,
-          liked ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onToggleLike} />
-          : <HeartOutlined key="heart"  onClick={onToggleLike} />,
+          liked ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onUnlike} />
+          : <HeartOutlined key="heart"  onClick={onLike} />,
           <MessageOutlined key="comment" onClick={onToggleComment} />,
           <Popover key="more" content={(
             <Button.Group>
-              { id && post.User.id !== id ? (  // DB가 있을 경우 === 바꿔야함
+              { id && post.User.id === id ? (  
                 <>
                 <Button>수정</Button>
                 <Button type="danger" onClick={onRemovePost} loading={removePostLoading}>삭제</Button>
@@ -95,7 +105,8 @@ PostCard.propTypes = {
     content: PropTypes.string,
     createdAt : PropTypes.string,
     Comments: PropTypes.arrayOf(PropTypes.object),
-    Images: PropTypes.arrayOf(PropTypes.object)
+    Images: PropTypes.arrayOf(PropTypes.object),
+    Likers: PropTypes.arrayOf(PropTypes.object)
   }).isRequired,
 }
 

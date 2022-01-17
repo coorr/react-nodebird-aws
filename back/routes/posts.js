@@ -4,7 +4,6 @@ const { Post, User, Image,Comment } = require('../models');
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {
-  console.log("실햊웅ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ");
   try {
     const posts = await Post.findAll({
       // where: { id: posts.id, },
@@ -24,7 +23,11 @@ router.get('/', async (req, res, next) => {
           model: User,
           attributes: ['id', 'nickname']
         }],
-      },
+      },  {
+        model: User,  // 게시글 작성자
+        as: 'Likers',
+        attributes: ['id'],
+      }
     ]
     })
     res.status(200).json(posts);

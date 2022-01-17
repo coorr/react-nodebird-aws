@@ -105,7 +105,7 @@ const reducer = (state = initialState,action) => produce(state, (draft) =>  {
     case FOLLOW_SUCCESS:
       draft.followLoading=false;
       draft.followDone=true;
-      draft.me.Followings.push({id: action.data});
+      draft.me.Followings.push({id: action.data.userId});
       break;
     case FOLLOW_FAILURE:
       draft.followLoading=false;
@@ -120,7 +120,7 @@ const reducer = (state = initialState,action) => produce(state, (draft) =>  {
     case UNFOLLOW_SUCCESS:
       draft.unfollowLoading=false;
       draft.unfollowDone=true;
-      draft.me.Followings= draft.me.Followings.filter((v) => v.id !== action.data);
+      draft.me.Followings= draft.me.Followings.filter((v) => v.id !== action.data.userId);
       break;
     case UNFOLLOW_FAILURE:
       draft.unfollowLoading=false;
@@ -177,6 +177,7 @@ const reducer = (state = initialState,action) => produce(state, (draft) =>  {
       draft.changeNicknameError=null
       break;
     case CHANGE_NICKNAME_SUCCESS:
+      draft.me.nickname = action.data.nickname;
       draft.changeNicknameLoading=false;
       draft.changeNicknameDone=true;
       break;
