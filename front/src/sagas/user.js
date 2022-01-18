@@ -6,7 +6,7 @@ import {
   SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE, 
   FOLLOW_SUCCESS, FOLLOW_FAILURE, FOLLOW_REQUEST,
   UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE, UNFOLLOW_REQUEST, 
-  LOAD_MY_INFO_REQUEST, LOAD_MY_INFO_SUCCESS, LOAD_MY_INFO_FAILURE
+  LOAD_MY_INFO_REQUEST, LOAD_MY_INFO_SUCCESS, LOAD_MY_INFO_FAILURE, LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST, LOAD_FOLLOWERS_SUCCESS, LOAD_FOLLOWERS_FAILURE, LOAD_FOLLOWINGS_FAILURE, LOAD_FOLLOWINGS_SUCCESS, REMOVE_FOLLOWER_REQUEST, REMOVE_FOLLOWER_SUCCESS, REMOVE_FOLLOWER_FAILURE
 } from '../reducers/user';
 
 
@@ -126,6 +126,63 @@ function* unfollow(action) {
   }  
 }
 
+function loadFollowersAPI(data) {
+  return axios.get('/user/followers', data);
+}
+
+function* loadFollowers(action) {
+  try {
+    const result =  yield call(loadFollowersAPI, action.data);
+    yield put({       
+      type: LOAD_FOLLOWERS_SUCCESS, 
+      data: result.data
+    }) 
+  } catch (err) {
+    yield put({
+      type: LOAD_FOLLOWERS_FAILURE,
+      error : err.response.data
+    })
+  }  
+}
+
+function loadFollowingsAPI(data) {
+  return axios.get('/user/followings',data);
+}
+
+function* loadFollowings(action) {
+  try {
+    const result =  yield call(loadFollowingsAPI, action.data);
+    yield put({       
+      type: LOAD_FOLLOWINGS_SUCCESS, 
+      data: result.data
+    }) 
+  } catch (err) {
+    yield put({
+      type: LOAD_FOLLOWINGS_FAILURE,
+      error : err.response.data
+    })
+  }  
+}
+
+function removeFollowerAPI(data) {
+  return axios.delete(`/user/follower/${data}`);
+}
+
+function* removeFollower(action) {
+  try {
+    const result =  yield call(removeFollowerAPI, action.data);
+    yield put({       
+      type: REMOVE_FOLLOWER_SUCCESS, 
+      data: result.data
+    }) 
+  } catch (err) {
+    yield put({
+      type: REMOVE_FOLLOWER_FAILURE,
+      error : err.response.data
+    })
+  }  
+}
+
 function* watchFollow() {
   yield takeLatest(FOLLOW_REQUEST, follow);
 }
@@ -138,13 +195,22 @@ function* watchLogIn() {
 function* watchLogOut() {
   yield takeLatest(LOG_OUT_REQUEST, logOut);
 }
-
 function* watchSignUp() {
   yield takeLatest(SIGN_UP_REQUEST, signUp)
 }
 function* watchLoadMyInfo() {
   yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo)
 }
+function* watchLoadFollowers() {
+  yield takeLatest(LOAD_FOLLOWERS_REQUEST, loadFollowers)
+}
+function* watchLoadFollowings() {
+  yield takeLatest(LOAD_FOLLOWINGS_REQUEST, loadFollowings)
+}
+function* watchLoadRemoveFollower() {
+  yield takeLatest(REMOVE_FOLLOWER_REQUEST, removeFollower)
+}
+
 
 
 
@@ -156,5 +222,8 @@ export default function* userSage() {
     fork(watchLogOut),
     fork(watchSignUp),
     fork(watchLoadMyInfo),
+    fork(watchLoadFollowers),
+    fork(watchLoadFollowings),
+    fork(watchLoadRemoveFollower),
   ])
 }

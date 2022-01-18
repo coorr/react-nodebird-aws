@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
+const path = require('path');
 
 const app = express();  // 서버
 const db = require('./models');
@@ -22,6 +23,7 @@ db.sequelize.sync()
   })
   .catch(err => console.log(err))
 
+app.use('/',express.static(path.join(__dirname, 'uploads')));
 app.use(morgan('dev'));
 app.use(cors({
   origin: 'http://localhost:4000',

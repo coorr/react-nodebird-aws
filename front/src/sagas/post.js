@@ -4,7 +4,10 @@ import {
   ADD_POST_REQUEST, ADD_POST_SUCCESS, ADD_POST_FAILURE,
   ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_COMMENT_FAILURE, 
   REMOVE_POST_REQUEST, REMOVE_POST_SUCCESS, REMOVE_POST_FAILURE, 
-  LOAD_POSTS_REQUEST, LOAD_POSTS_SUCCESS, LOAD_POSTS_FAILURE, LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE,
+  LOAD_POSTS_REQUEST, LOAD_POSTS_SUCCESS, LOAD_POSTS_FAILURE, 
+  LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, LIKE_POST_SUCCESS, 
+  LIKE_POST_FAILURE, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE,
+  UPLOAD_IMAGES_FAILURE, UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, RETWEET_SUCCESS, RETWEET_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, CHANGE_NICKNAME_FAILURE, CHANGE_NICKNAME_REQUEST, CHANGE_NICKNAME_SUCCESS, REMOVE_POST_OF_ME } from '../reducers/user';
 
@@ -30,7 +33,7 @@ function* loadPosts(action) {
 }
 
 function addPostAPI(data) {
-  return axios.post('/post', {content: data});
+  return axios.post('/post',  data);
 }
 
 function* addPost(action) {
@@ -150,6 +153,44 @@ function* changeNickname(action) {
   }  
 }
 
+function uploadImagesAPI(data) {
+  return axios.post('/post/images', data);
+}
+
+function* uploadImages(action) {
+  try {
+    const result =  yield call(uploadImagesAPI, action.data);
+    yield put({       
+      type: UPLOAD_IMAGES_SUCCESS, 
+      data: result.data
+    }) 
+  } catch (err) {
+    yield put({
+      type: UPLOAD_IMAGES_FAILURE,
+      error : err.response.data
+    })
+  }  
+}
+
+function retweetAPI(data) {
+  return axios.post(`/post/${data}/retweet`);
+}
+
+function* retweet(action) {
+  try {
+    const result =  yield call(retweetAPI, action.data);
+    yield put({       
+      type: RETWEET_SUCCESS, 
+      data: result.data
+    }) 
+  } catch (err) {
+    yield put({
+      type: RETWEET_FAILURE,
+      error : err.response.data
+    })
+  }  
+}
+
 function* watchLoadPosts() {
   yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
 }
@@ -171,6 +212,12 @@ function* watchUnlikePost() {
 function* watchChangeNickname() {
   yield takeLatest(CHANGE_NICKNAME_REQUEST, changeNickname);
 }
+function* watchLoadUploadImages() {
+  yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages)
+}
+function* watchLoadRetweet() {
+  yield takeLatest(UPLOAD_IMAGES_REQUEST, retweet)
+}
 
 
 
@@ -183,5 +230,7 @@ export default function* postSaga() {
     fork(watchLikePost),
     fork(watchUnlikePost),
     fork(watchChangeNickname),
+    fork(watchLoadUploadImages),
+    fork(watchLoadRetweet),
   ])
 }

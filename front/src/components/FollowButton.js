@@ -8,7 +8,6 @@ const FollowButton = ({ post }) => {
   const dispatch = useDispatch();
   const { me, followLoading, unfollowLoading } = useSelector((state) => state.user);
   const isFollowing =  me?.Followings.find((v) => v.id === post.User.id);  // 내가 팔로잉 했는지/안했는지 확인
-  console.log(isFollowing);
   const onClickButton = useCallback(() => {
     if(isFollowing) {
       dispatch({
