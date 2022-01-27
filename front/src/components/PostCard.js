@@ -1,6 +1,6 @@
 import { EllipsisOutlined, HeartOutlined, HeartTwoTone, MessageOutlined, RetweetOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Popover, List, Comment } from 'antd';
-import React, { useState,useCallback } from 'react';
+import React, { useState,useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import PropTypes from 'prop-types';
@@ -17,6 +17,8 @@ const PostCard = ({ post }) => {
   const id = useSelector((state) => state.user.me?.id);
   
   const { removePostLoading } = useSelector((state) => state.post);
+
+ 
 
   const onLike = useCallback(() => {
     if(!id) {
@@ -63,6 +65,7 @@ const PostCard = ({ post }) => {
       data: post.id,
     })
   })
+  // console.log(post);
   const liked = post.Likers.find((v) => v.id === id);
 
   return (
@@ -87,14 +90,30 @@ const PostCard = ({ post }) => {
             <EllipsisOutlined   />
           </Popover>,
         ]}
+        title={post.RetweetId ? `${post.User.nickname}님이 리트윗하셨습니다.` : null}
         extra={id && <FollowButton post={post} />}
       >
-        <Card.Meta 
-          avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-          description={<PostCardContent postData={post.content} />}
-          // description={post.content}
-          title={post.User.nickname}
-        />
+        { post.RetweetId && post.Retweet ?
+          (
+            <Card
+              cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />} 
+            >
+              <Card.Meta 
+                avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
+                description={<PostCardContent postData={post.Retweet.content} />}
+                title={post.Retweet.User.nickname}
+              />
+            </Card>
+          )
+          : (
+          <Card.Meta 
+            avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+            description={<PostCardContent postData={post.content} />}
+            title={post.User.nickname}
+         />
+          )
+        }
+        
       </Card>
       {commentFormOpened && (
         <div>
@@ -128,7 +147,9 @@ PostCard.propTypes = {
     createdAt : PropTypes.string,
     Comments: PropTypes.arrayOf(PropTypes.object),
     Images: PropTypes.arrayOf(PropTypes.object),
-    Likers: PropTypes.arrayOf(PropTypes.object)
+    Likers: PropTypes.arrayOf(PropTypes.object),
+    RetweetId: PropTypes.number,
+    Retweet: PropTypes.objectOf(PropTypes.any),
   }).isRequired,
 }
 

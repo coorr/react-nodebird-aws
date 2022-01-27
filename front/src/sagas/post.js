@@ -7,18 +7,18 @@ import {
   LOAD_POSTS_REQUEST, LOAD_POSTS_SUCCESS, LOAD_POSTS_FAILURE, 
   LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, LIKE_POST_SUCCESS, 
   LIKE_POST_FAILURE, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE,
-  UPLOAD_IMAGES_FAILURE, UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, RETWEET_SUCCESS, RETWEET_FAILURE,
+  UPLOAD_IMAGES_FAILURE, UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, RETWEET_SUCCESS, RETWEET_FAILURE, RETWEET_REQUEST, LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, CHANGE_NICKNAME_FAILURE, CHANGE_NICKNAME_REQUEST, CHANGE_NICKNAME_SUCCESS, REMOVE_POST_OF_ME } from '../reducers/user';
 
-function loadPostsAPI() {
-  return axios.get('/posts');
+function loadPostsAPI(lastId) {
+  return axios.get(`/posts?lastId=${lastId || 0}`);
 }
 
 function* loadPosts(action) {
   try {
-    const result = yield call(loadPostsAPI, action.data);
     console.log(result);
+    const result = yield call(loadPostsAPI, action.lastId);
     yield put({       
       type: LOAD_POSTS_SUCCESS, 
       data: result.data
@@ -27,7 +27,28 @@ function* loadPosts(action) {
     console.error(err);
     yield put({
       type: LOAD_POSTS_FAILURE,
-      data : err.response.data
+      error : err.response.data
+    })
+  }  
+}
+
+function loadPostAPI(data) {
+  return axios.get(`/post/${data}`);
+}
+
+function* loadPost(action) {
+  try {
+    console.log(result);
+    const result = yield call(loadPostAPI, action.data);
+    yield put({       
+      type: LOAD_POST_SUCCESS, 
+      data: result.data
+    })
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_POST_FAILURE,
+      // error : err.response.data
     })
   }  
 }
@@ -38,6 +59,7 @@ function addPostAPI(data) {
 
 function* addPost(action) {
   try {
+    console.log(result);
     const result =  yield call(addPostAPI, action.data);
     yield put({       
       type: ADD_POST_SUCCESS, 
@@ -50,13 +72,12 @@ function* addPost(action) {
   } catch (err) {
     yield put({
       type: ADD_POST_FAILURE,
-      data : err.response.data
+      error : err.response.data
     })
   }  
 }
 
 function addCommentAPI(data) {
-  console.log(data);
   return axios.post(`/post/${data.postId}/comment`, data);
 }
 
@@ -72,7 +93,7 @@ function* addComment(action) {
     console.error(err);
     yield put({
       type: ADD_COMMENT_FAILURE,
-      data : err.response.data
+      error : err.response.data
     })
   }  
 }
@@ -91,7 +112,7 @@ function* removePost(action) {
   } catch (err) {
     yield put({
       type: REMOVE_POST_FAILURE,
-      data : err.response.data
+      error : err.response.data
     })
   }  
 }
@@ -110,7 +131,7 @@ function* likePost(action) {
   } catch (err) {
     yield put({
       type: LIKE_POST_FAILURE,
-      data : err.response.data
+      error : err.response.data
     })
   }  
 }
@@ -129,7 +150,7 @@ function* unlikePost(action) {
   } catch (err) {
     yield put({
       type: UNLIKE_POST_FAILURE,
-      data : err.response.data
+      error : err.response.data
     })
   }  
 }
@@ -148,7 +169,7 @@ function* changeNickname(action) {
   } catch (err) {
     yield put({
       type: CHANGE_NICKNAME_FAILURE,
-      data : err.response.data
+      error : err.response.data
     })
   }  
 }
@@ -194,6 +215,9 @@ function* retweet(action) {
 function* watchLoadPosts() {
   yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
 }
+function* watchLoadPost() {
+  yield takeLatest(LOAD_POST_REQUEST, loadPost);
+}
 function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
@@ -216,7 +240,7 @@ function* watchLoadUploadImages() {
   yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages)
 }
 function* watchLoadRetweet() {
-  yield takeLatest(UPLOAD_IMAGES_REQUEST, retweet)
+  yield takeLatest(RETWEET_REQUEST, retweet)
 }
 
 
@@ -227,6 +251,7 @@ export default function* postSaga() {
     fork(watchAddComment),
     fork(watchRemovePost),
     fork(watchLoadPosts),
+    fork(watchLoadPost),
     fork(watchLikePost),
     fork(watchUnlikePost),
     fork(watchChangeNickname),

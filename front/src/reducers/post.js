@@ -15,6 +15,10 @@ export const initialState = {
   unlikePostDone: false,
   unlikePostError: null,
 
+  loadPostLoading: false,
+  loadPostDone: false,
+  loadPostError: null,
+
   loadPostsLoading: false,
   loadPostsDone: false,
   loadPostsError: null,
@@ -38,6 +42,8 @@ export const initialState = {
   retweetLoading: false,
   retweetDone: false,
   retweetError: null,
+
+  singlePost:null,
 }
 
 export const LIKE_POST_REQUEST = "LIKE_POSTS_REQUEST";
@@ -47,6 +53,10 @@ export const LIKE_POST_FAILURE = "LIKE_POSTS_FAILURE";
 export const UNLIKE_POST_REQUEST = "UNLIKE_POSTS_REQUEST";
 export const UNLIKE_POST_SUCCESS = "UNLIKE_POSTS_SUCCESS";
 export const UNLIKE_POST_FAILURE = "UNLIKE_POSTS_FAILURE"; 
+
+export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST";
+export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS";
+export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE"; 
 
 export const LOAD_POSTS_REQUEST = "LOAD_POSTS_REQUEST";
 export const LOAD_POSTS_SUCCESS = "LOAD_POSTS_SUCCESS";
@@ -95,6 +105,7 @@ const reducer = (state = initialState,action) => produce(state, (draft) => {
       case RETWEET_SUCCESS:
         draft.retweetLoading=false;
         draft.retweetDone=true;
+        draft.mainPosts.unshift(action.data);
         break;
       case RETWEET_FAILURE: 
         draft.retweetLoading=false;
@@ -148,10 +159,24 @@ const reducer = (state = initialState,action) => produce(state, (draft) => {
         draft.unlikePostDone=true;
         break;
       }
-        
       case UNLIKE_POST_FAILURE:
         draft.unlikePostLoading=false;
         draft.unlikePostError=action.error
+        break;
+
+      case LOAD_POST_REQUEST:
+        draft.loadPostLoading=true;
+        draft.loadPostDone=false;
+        draft.loadPostError=null;
+        break;
+      case LOAD_POST_SUCCESS:
+        draft.loadPostLoading=false;
+        draft.loadPostDone=true;
+        draft.singlePost = action.data;
+        break;
+      case LOAD_POST_FAILURE:
+        draft.loadPostLoading=false;
+        draft.loadPostError=action.error
         break;
 
       case LOAD_POSTS_REQUEST:
@@ -160,11 +185,10 @@ const reducer = (state = initialState,action) => produce(state, (draft) => {
         draft.loadPostsError=null;
         break;
       case LOAD_POSTS_SUCCESS:
-        draft.mainPosts = action.data.concat(draft.mainPosts);
         draft.loadPostsLoading=false;
         draft.loadPostsDone=true;
-        draft.loadPostsError=null;
-        draft.hasMorePost = draft.mainPosts.length < 50;
+        draft.mainPosts = draft.mainPosts.concat(action.data);
+        draft.hasMorePost = action.data.length === 10;
         break;
       case LOAD_POSTS_FAILURE:
         draft.loadPostsLoading=false;

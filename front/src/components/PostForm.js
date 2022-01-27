@@ -36,12 +36,11 @@ const PostForm = () => {
   }, [imageInput.current])
 
   const onChangeImages = useCallback((e) => {
-    console.log('images', e.target.files);
     const imageFormData = new FormData();
     [].forEach.call(e.target.files, (f) => {
       imageFormData.append('image', f);
     })
-    console.log(imageFormData);
+    
     dispatch({
       type: UPLOAD_IMAGES_REQUEST,
       data: imageFormData,
@@ -55,7 +54,6 @@ const PostForm = () => {
     })
   })
 
-   
   return (
     <Form style={{margin: '10px 0 20px'}} encType='multipart/form-data' onFinish={onSubmit} >
       <Input.TextArea 
@@ -83,4 +81,4 @@ const PostForm = () => {
   );
 };
 
-export default PostForm;
+export default PostForm;   

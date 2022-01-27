@@ -5,27 +5,31 @@ import PostForm from '../components/PostForm.js';
 import PostCard from '../components/PostCard.js';
 import { LOAD_POSTS_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
+import wrapper from '../store/configureStore';
+import { END } from 'redux-saga';
+import axios from 'axios';
 
 const Home = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const { mainPosts, hasMorePost, loadPostsLoading } = useSelector((state) => state.post);
+  const { mainPosts, hasMorePost, loadPostsLoading, retweetError } = useSelector((state) => state.post);
 
-  useEffect(() => {
-    dispatch({
-      type: LOAD_MY_INFO_REQUEST
-    })
-    dispatch({
-      type: LOAD_POSTS_REQUEST,
-    });
-  }, []);
+   useEffect(() => {
+    if(retweetError) {
+      alert(retweetError);
+    }
+  }, [retweetError]);
+
+
 
   useEffect(() => {
     function onScroll() {
       if(window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight- 200) {
         if(hasMorePost && !loadPostsLoading) {
+          const lastId = mainPosts[mainPosts.length - 1]?.id;
           dispatch({
             type: LOAD_POSTS_REQUEST,
+            lastId,
           });
         }
       }
@@ -34,7 +38,7 @@ const Home = () => {
     return () => {
       window.removeEventListener('scroll', onScroll)
     }
-  }, [hasMorePost, loadPostsLoading]);
+  }, [hasMorePost, loadPostsLoading, mainPosts]);
 
   
   return (
@@ -45,5 +49,22 @@ const Home = () => {
     
   );
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(async (context) =>  {
+  const cookie = context.req ? context.req.headers.cookie : '';
+  axios.defaults.headers.Cookie= '';
+  if(context.req && cookie) {
+    axios.defaults.headers.Cookie= cookie;
+  }
+  context.store.dispatch({
+    type: LOAD_MY_INFO_REQUEST
+  })
+  context.store.dispatch({
+    type: LOAD_POSTS_REQUEST,
+  });
+  context.store.dispatch(END)
+    await context.store.sagaTask.toPromise();
+  
+})
 
 export default Home;
