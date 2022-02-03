@@ -2,6 +2,7 @@ const express = require('express');
 const postRouter = require('./routes/post')
 const userRouter = require('./routes/user')
 const postsRouter = require('./routes/posts')
+const hashtag = require('./routes/hashtag');
 const cors = require('cors');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
@@ -13,6 +14,7 @@ const path = require('path');
 const app = express();  // 서버
 const db = require('./models');
 const passportConfig = require('./passport');
+
 
 dotenv.config();
 
@@ -48,6 +50,7 @@ app.get('/', (req,res) => {
 app.use('/post', postRouter);
 app.use('/user', userRouter);
 app.use('/posts', postsRouter);
+app.use('/hashtag', hashtag);
 
 app.use((err,req,res,next) => {
   

@@ -9,6 +9,10 @@ import CommentForm from './CommentForm.js';
 import PostCardContent from './PostCardContent.js';
 import { LIKE_POST_REQUEST, REMOVE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST } from '../reducers/post.js';
 import FollowButton from './FollowButton.js'
+import Link from 'next/link';
+import moment from 'moment';
+
+moment.locale('ko');
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
@@ -98,19 +102,33 @@ const PostCard = ({ post }) => {
             <Card
               cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />} 
             >
+              <div style={{float: 'right'}}>{moment(post.createdAt).format('YYYY.MM.DD')}</div>
+
               <Card.Meta 
-                avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
+                avatar={(
+                  <Link href={`/user/${post.Retweet.User.id}`}>
+                    <a><Avatar>{post.Retweet.User.nickname[0]}</Avatar></a>
+                  </Link>
+                )}
                 description={<PostCardContent postData={post.Retweet.content} />}
                 title={post.Retweet.User.nickname}
               />
             </Card>
           )
           : (
-          <Card.Meta 
-            avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-            description={<PostCardContent postData={post.content} />}
-            title={post.User.nickname}
-         />
+            <>
+              <div style={{float: 'right'}}>{moment(post.createdAt).format('YYYY.MM.DD')}</div>
+              <Card.Meta 
+              avatar={(
+                <Link href={`/user/${post.User.id}`}>
+                  <Avatar>{post.User.nickname[0]}</Avatar>
+                </Link>
+              )}
+              description={<PostCardContent postData={post.content} />}
+              title={post.User.nickname}
+              />
+            </>
+          
           )
         }
         
@@ -126,7 +144,11 @@ const PostCard = ({ post }) => {
               <li>
                 <Comment
                   author={item.User.nickname}
-                  avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+                  avatar={(
+                    <Link href={`/user/${item.User.id}`}>
+                      <Avatar>{item.User.nickname[0]}</Avatar>
+                    </Link>
+                  )}
                   content={item.content}
                 />
                 

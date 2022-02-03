@@ -1,0 +1,9 @@
+{
+  "presets": ["next/babel"],
+  "plugins": [
+    ["babel-plugin-styled-components", {
+      "ssr": true, // 서버사이드렌더링
+      "displayName" : true // 개발자 도구에서 form 등 외계어를 컴포넌트으로 변형
+    }]
+  ]
+} 

@@ -27,6 +27,7 @@ const Home = () => {
       if(window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight- 200) {
         if(hasMorePost && !loadPostsLoading) {
           const lastId = mainPosts[mainPosts.length - 1]?.id;
+          console.log(lastId);
           dispatch({
             type: LOAD_POSTS_REQUEST,
             lastId,
@@ -46,7 +47,6 @@ const Home = () => {
      { me && <PostForm />}
      { mainPosts.map((post) =>  <PostCard key={post.id} post={post} /> )}
     </AppLayout>
-    
   );
 };
 
@@ -63,8 +63,7 @@ export const getServerSideProps = wrapper.getServerSideProps(async (context) => 
     type: LOAD_POSTS_REQUEST,
   });
   context.store.dispatch(END)
-    await context.store.sagaTask.toPromise();
-  
+  await context.store.sagaTask.toPromise();
 })
 
 export default Home;
