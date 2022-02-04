@@ -1,0 +1,1 @@
+{"ast":null,"code":"export var backUrl = \"http://3.35.176.162\";","map":{"version":3,"sources":["C:/Users/sysone/Desktop/react-next/front/src/config/config.js"],"names":["backUrl"],"mappings":"AAAA,OAAO,IAAMA,OAAO,GAAG,qBAAhB","sourcesContent":["export const backUrl = \"http://3.35.176.162\";"]},"metadata":{},"sourceType":"module"}
