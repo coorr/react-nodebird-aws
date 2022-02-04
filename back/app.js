@@ -10,6 +10,8 @@ const passport = require('passport');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const path = require('path');
+const hpp = require('hpp');
+const helmet = require('helmet');
 
 const app = express();  // 서버
 const db = require('./models');
@@ -25,10 +27,18 @@ db.sequelize.sync()
   })
   .catch(err => console.log(err))
 
+
+if(process.env.NODE_ENV === 'production') {
+  app.use(morgan('combined'));
+  app.use(hpp());
+  app.use(helmet());
+} else {
+  app.use(morgan('dev'));
+}
+
 app.use('/',express.static(path.join(__dirname, 'uploads')));
-app.use(morgan('dev'));
 app.use(cors({
-  origin: 'http://localhost:4000',
+  origin: ['http://localhost:4000', 'nodebird.com'],
   credentials: true, // 프론트의 cookie가 백엔드로 보낼 수 있게 허용
 }));
 app.use(express.json());   // req.body 쓸 수 있게 해주는 부분
