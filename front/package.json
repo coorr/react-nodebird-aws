@@ -30,7 +30,8 @@
     "styled-components": "^5.3.3",
     "swr": "^1.2.1",
     "web-vitals": "^2.1.2",
-    "webpack": "^4.20.2"
+    "webpack": "^4.20.2",
+    "@withshepherd/faker": "^5.5.5"
   },
   "scripts": {
     "start": "cross-env NODE_ENV=production next start -p 4000",
