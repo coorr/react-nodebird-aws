@@ -1,7 +1,6 @@
 import shortid from "shortid";
 import { ADD_POST_TO_ME } from "./user";
 import produce from 'immer';
-import faker from '@withshepherd/faker';
 
 export const initialState = {
   mainPosts: [],
