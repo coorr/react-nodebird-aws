@@ -38,7 +38,7 @@ if(process.env.NODE_ENV === 'production') {
 
 app.use('/',express.static(path.join(__dirname, 'uploads')));
 app.use(cors({
-  origin: ['http://localhost:4000', 'nodebird.com'],
+  origin: ['http://localhost:4000', 'nodebird.com', 'http://3.36.125.212'],
   credentials: true, // 프론트의 cookie가 백엔드로 보낼 수 있게 허용
 }));
 app.use(express.json());   // req.body 쓸 수 있게 해주는 부분
