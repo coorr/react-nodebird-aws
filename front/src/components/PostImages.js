@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types'
 import { PlusOutlined } from '@ant-design/icons/lib/icons';
 import ImagesZoom from './ImagesZoom/index.js';
+import { backUrl } from '../config/config'
 
 const PostImages = ({images}) => {
   const [showImagesZoom, setShowImagesZoom] = useState('');
@@ -16,7 +17,7 @@ const PostImages = ({images}) => {
   if(images.length === 1) {
     return (
       <>
-        <img role="presentation" src={`http://localhost:4001/${images[0].src}`} alt={images[0].src} onClick={onZoom} />
+        <img role="presentation" src={`${backUrl}/${images[0].src}`} alt={images[0].src} onClick={onZoom} />
         {showImagesZoom && <ImagesZoom images={images} onClose={onClose} />}
       </>
     )
@@ -25,8 +26,8 @@ const PostImages = ({images}) => {
     return (
       <>
         <div style={{displey:'flex'}}>
-          <img role="presentation" style={{width:"40%"}} src={`http://localhost:4001/${images[0].src}`} alt={images[0].src} onClick={onZoom} />
-          <img role="presentation" style={{width:"40%"}} src={`http://localhost:4001/${images[1].src}`} alt={images[1].src} onClick={onZoom} />
+          <img role="presentation" style={{width:"40%"}} src={`${backUrl}/${images[0].src}`} alt={images[0].src} onClick={onZoom} />
+          <img role="presentation" style={{width:"40%"}} src={`${backUrl}/${images[1].src}`} alt={images[1].src} onClick={onZoom} />
           {showImagesZoom && <ImagesZoom images={images} onClose={onClose} />}
         </div>
       </>
@@ -34,7 +35,7 @@ const PostImages = ({images}) => {
   }
   return (
     <div>
-      <img role="presentation" style={{width:"50%"}} src={`http://localhost:4001/${images[0].src}`} alt={images[0].src} onClick={onZoom} />
+      <img role="presentation" style={{width:"50%"}} src={`${backUrl}/${images[0].src}`} alt={images[0].src} onClick={onZoom} />
       <div
         role="presentation"
         style={{display: 'inline-block', width:'50%' , textAlign:'center' , verticalAlign:'middle'}}
