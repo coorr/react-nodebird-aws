@@ -1,8 +1,8 @@
 import React, { useCallback} from 'react';
 import { Card, Avatar, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { logoutRequestAction, LOG_OUT_REQUEST } from '../reducers/user.js';
-import Link from 'next/link'
+import { logoutRequestAction, LOG_OUT_REQUEST } from '../reducers/user.js';           
+import Link from 'next/link' 
 
 const UserProfile = () => {
   const dispatch = useDispatch();
