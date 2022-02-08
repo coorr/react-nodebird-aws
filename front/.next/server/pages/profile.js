@@ -3840,7 +3840,8 @@ module.exports = require("@redux-saga/core");
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return backUrl; });
-const backUrl = "http://3.35.176.162"; // export const backUrl = "http://localhost:4001";
+// export const backUrl = "http://3.35.176.162";
+const backUrl = "http://api.nodebird.com"; // export const backUrl = "http://localhost:4001";
 
 /***/ }),
 
