@@ -2,6 +2,8 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const multerS3 = require('multer-s3');
+const AWS = require('aws-sdk');
 
 const router = express.Router();
 const { Post, Comment, Image, User, Hashtag } = require('../models');
@@ -14,15 +16,18 @@ try {
   fs.mkdirSync('uploads');
 }
 
+AWS.config.update({
+  accessKeyId: process.env.S3_ACCESS_KEY_ID,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  region: 'ap-northeast-2',
+});
+
 const upload = multer({
-  storage: multer.diskStorage({     // 현재 지금은 하드디스크 -> AWS 변환해야함
-    destination(req, file, done) {
-      done(null, 'uploads');
-    },
-    filename(req, file, done) { 
-      const ext = path.extname(file.originalname); // 확장자 추출 -> (.png) 
-      const basename = path.basename(file.originalname, ext);
-      done(null, basename + '_' + new Date().getTime() + ext);  // 진성123123122.png  (같은 파일일 경우 밀리는 경우를 없애기 위한)
+  storage: multerS3({
+    s3: new AWS.S3(),
+    bucket: 'coorsm-s3',
+    key(req, file, cb) {
+      cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`)
     }
   }),
   limits: { fileSize: 20 * 1024 * 1024 },  // 20MB 제한
@@ -78,7 +83,7 @@ router.post('/',isLoggedIn, upload.none(), async (req,res,next) => {
 
 router.post('/images', isLoggedIn, upload.array('image'), (req,res,next) => {  // post / post/imgeas
   console.log(req.files);
-  res.json(req.files.map((v) => v.filename));
+  res.json(req.files.map((v) => v.location));
 })
 
 router.post('/:postId/retweet',isLoggedIn, async (req,res,next) => {
