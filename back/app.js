@@ -33,7 +33,7 @@ if(process.env.NODE_ENV === 'production') {
   app.use(hpp());
   app.use(helmet());
   app.use(cors({
-    origin: ['http://localhost:4000', 'coorsm.cf', 'http://13.124.34.97' ],
+    origin: ['http://localhost:4000', 'http://coorsm.cf' ],
     credentials: true, // 프론트의 cookie가 백엔드로 보낼 수 있게 허용
   }));
 
@@ -57,7 +57,7 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: false,
-    domain: process.env.NODE_ENV === 'production' 
+    domain: process.env.NODE_ENV === 'production'  && '.coorsm.cf'
   }
 }));
 app.use(passport.initialize());
