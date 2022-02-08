@@ -3841,8 +3841,8 @@ module.exports = require("@redux-saga/core");
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return backUrl; });
 // export const backUrl = "http://3.35.176.162";
-const backUrl = "http://15.164.121.12"; // export const backUrl = "http://api.coorsm.com";
-// export const backUrl = "http://localhost:4001";
+// export const backUrl = "http://15.164.121.12";
+const backUrl = "http://api.coorsm.cf"; // export const backUrl = "http://localhost:4001";
 
 /***/ }),
 
