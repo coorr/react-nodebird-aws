@@ -32,15 +32,21 @@ if(process.env.NODE_ENV === 'production') {
   app.use(morgan('combined'));
   app.use(hpp());
   app.use(helmet());
+  app.use(cors({
+    origin: ['http://localhost:4000', 'http://nodebird.com'],
+    credentials: true, // 프론트의 cookie가 백엔드로 보낼 수 있게 허용
+  }));
+
 } else {
   app.use(morgan('dev'));
+  app.use(cors({
+    origin: true,
+    credentials: true, // 프론트의 cookie가 백엔드로 보낼 수 있게 허용
+  }));
 }
 
 app.use('/',express.static(path.join(__dirname, 'uploads')));
-app.use(cors({
-  origin: ['http://localhost:4000', 'nodebird.com'],
-  credentials: true, // 프론트의 cookie가 백엔드로 보낼 수 있게 허용
-}));
+
 app.use(express.json());   // req.body 쓸 수 있게 해주는 부분
 app.use(express.urlencoded({extended:true}));  // form 으로 넘겼을 떄 req.body 받을 수 있게 
 app.use(cookieParser(process.env.COOKIE_SECRET));
