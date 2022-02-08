@@ -57,7 +57,7 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: false,
-    domain: process.env.NODE_ENV === 'production' && '.coorsm.com'
+    domain: process.env.NODE_ENV === 'production' && '.13.124.34.97.com'
   }
 }));
 app.use(passport.initialize());
