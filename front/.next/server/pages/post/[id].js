@@ -883,7 +883,7 @@ const ImagesZoom = ({
           slidesToScroll: 1,
           children: images.map(v => /*#__PURE__*/Object(jsx_runtime_["jsx"])(ImgWrapper, {
             children: /*#__PURE__*/Object(jsx_runtime_["jsx"])("img", {
-              src: `${config["a" /* backUrl */]}/${images[0].src}`,
+              src: v.src,
               alt: v.src
             })
           }, v.src))
@@ -925,7 +925,7 @@ const PostImages = ({
     return /*#__PURE__*/Object(jsx_runtime_["jsxs"])(jsx_runtime_["Fragment"], {
       children: [/*#__PURE__*/Object(jsx_runtime_["jsx"])("img", {
         role: "presentation",
-        src: `${config["a" /* backUrl */]}/${images[0].src}`,
+        src: `${images[0].src}`,
         alt: images[0].src,
         onClick: onZoom
       }), showImagesZoom && /*#__PURE__*/Object(jsx_runtime_["jsx"])(components_ImagesZoom, {
@@ -946,7 +946,7 @@ const PostImages = ({
           style: {
             width: "40%"
           },
-          src: `${config["a" /* backUrl */]}/${images[0].src}`,
+          src: `${images[0].src}`,
           alt: images[0].src,
           onClick: onZoom
         }), /*#__PURE__*/Object(jsx_runtime_["jsx"])("img", {
@@ -954,7 +954,7 @@ const PostImages = ({
           style: {
             width: "40%"
           },
-          src: `${config["a" /* backUrl */]}/${images[1].src}`,
+          src: `${images[1].src}`,
           alt: images[1].src,
           onClick: onZoom
         }), showImagesZoom && /*#__PURE__*/Object(jsx_runtime_["jsx"])(components_ImagesZoom, {
@@ -971,7 +971,7 @@ const PostImages = ({
       style: {
         width: "50%"
       },
-      src: `${config["a" /* backUrl */]}/${images[0].src}`,
+      src: `${images[0].src}`,
       alt: images[0].src,
       onClick: onZoom
     }), /*#__PURE__*/Object(jsx_runtime_["jsxs"])("div", {
