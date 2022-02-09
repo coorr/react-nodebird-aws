@@ -899,7 +899,7 @@ const PostForm = () => {
           display: 'inline-block'
         },
         children: [/*#__PURE__*/Object(jsx_runtime_["jsx"])("img", {
-          src: v,
+          src: v.replace(/\/thumb\//, '/original/'),
           style: {
             width: '200px'
           },
