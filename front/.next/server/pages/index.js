@@ -1124,7 +1124,7 @@ const ImagesZoom = ({
           slidesToScroll: 1,
           children: images.map(v => /*#__PURE__*/Object(jsx_runtime_["jsx"])(ImgWrapper, {
             children: /*#__PURE__*/Object(jsx_runtime_["jsx"])("img", {
-              src: v.src,
+              src: `${v.src.replace(/\/thumb\//, '/original/')}`,
               alt: v.src
             })
           }, v.src))
@@ -4543,7 +4543,7 @@ const reducer = (state = initialState, action) => immer__WEBPACK_IMPORTED_MODULE
       break;
 
     case UPLOAD_IMAGES_SUCCESS:
-      draft.imagePaths = action.data;
+      draft.imagePaths = draft.imagePaths.concat(action.data);
       draft.uploadImagesLoading = false;
       draft.uploadImagesDone = true;
       break;
